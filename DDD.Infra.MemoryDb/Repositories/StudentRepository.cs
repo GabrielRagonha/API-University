@@ -11,104 +11,61 @@ namespace DDD.Infra.MemoryDb.Repositories
 {
     public class StudentRepository : IStudentRepository
     {
-        public StudentRepository()
+        private readonly ApiContext _context;
+
+        //Dependency Injection
+        public StudentRepository(ApiContext context)
         {
-            using (var context = new ApiContext())
-            {
-                var students = new List<Student>()
-                {
-                    new Student
-                    {
-                        FirstName = "Gabriel",
-                        LastName = "Rodrigues",
-                        Email = "gabriel@hotmail.com",
-                        IsActive = true,
-                        RegisterDate = DateTime.Now,
-                        Id = 1,
-                        Disciplines = new List<Discipline>()
-                        {
-                            new Discipline ()
-                            {
-                                Id = 1,
-                                Name = "Programação II",
-                                EAD = true,
-                                IsAvailable = true,
-                                Value = 100.00
-                            },
-
-                            new Discipline ()
-                            {
-                                Id = 2,
-                                Name = "Programação Web",
-                                EAD = true,
-                                IsAvailable = true,
-                                Value = 100.00
-                            },
-
-                            new Discipline ()
-                            {
-                                Id = 3,
-                                Name = "Banco de dados",
-                                EAD = true,
-                                IsAvailable = true,
-                                Value = 50.00
-                            }
-                        }
-                    },
-
-                    new Student
-                    {
-                        FirstName = "Jeferson",
-                        LastName = "Menezes",
-                        Email = "jeff@hotmail.com",
-                        IsActive = true,
-                        RegisterDate = DateTime.Now,
-                        Id = 2,
-                        Disciplines = new List<Discipline>()
-                        {
-                            new Discipline ()
-                            {
-                                Id = 4,
-                                Name = "Programação II",
-                                EAD = true,
-                                IsAvailable = true,
-                                Value = 100.00
-                            },
-
-                            new Discipline ()
-                            {
-                                Id = 5,
-                                Name = "Programação Web",
-                                EAD = true,
-                                IsAvailable = true,
-                                Value = 100.00
-                            },
-
-                            new Discipline ()
-                            {
-                                Id = 6,
-                                Name = "Banco de dados",
-                                EAD = true,
-                                IsAvailable = true,
-                                Value = 50.00
-                            }
-                        }
-                    }
-                };
-
-                context.Students.AddRange(students);
-                context.SaveChanges();
-            }
+            _context = context;
         }
-
-
 
         public List<Student> GetStudents()
         {
-            using (var context = new ApiContext())
+            var list = _context.Students.Include(x => x.Disciplines).ToList();
+            return list;
+        }
+
+        public Student GetStudent(int id)
+        {
+            return _context.Students.Find(id);
+        }
+
+        public void InsertStudent(Student student)
+        {
+            try
             {
-                var list = context.Students.Include(x => x.Disciplines).ToList();
-                return list;
+                _context.Students.Add(student);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void UpdateStudent(Student student)
+        {
+            try
+            {
+                _context.Entry(student).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void DeleteStudent(Student student)
+        {
+            try
+            {
+                _context.Set<Student>().Remove(student);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

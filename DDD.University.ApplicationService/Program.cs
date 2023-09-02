@@ -1,10 +1,16 @@
+using DDD.Infra.MemoryDb;
 using DDD.Infra.MemoryDb.Interfaces;
 using DDD.Infra.MemoryDb.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+//IOC Inversion of Control - Dependency Injection
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IDisciplineRepository, DisciplineRepository>();
+builder.Services.AddScoped<ApiContext, ApiContext>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

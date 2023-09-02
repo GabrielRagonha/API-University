@@ -9,6 +9,11 @@ namespace DDD.Infra.MemoryDb.Interfaces
 {
     public interface IStudentRepository
     {
+        //CRUD
         public List<Student> GetStudents();
+        public Student GetStudent(int id);
+        public void InsertStudent(Student student);
+        public void UpdateStudent(Student student);
+        public void DeleteStudent(Student student);
     }
 }
